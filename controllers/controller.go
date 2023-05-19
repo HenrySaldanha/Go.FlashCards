@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
+	"github.com/HenrySaldanha/Go.FlashCards/models"
 	"github.com/HenrySaldanha/Go.FlashCards/repository"
 )
 
@@ -17,5 +19,8 @@ func GetAllCards(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertCard(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Inserindo registro")
+	var card models.Card
+	json.NewDecoder(r.Body).Decode(&card)
+
+	repository.SaveCard(card)
 }

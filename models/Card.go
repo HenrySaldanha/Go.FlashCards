@@ -5,6 +5,6 @@ type Card struct {
 	Phrase     string
 	Meaning    string
 	Difficulty Difficulty
-	Frequency  int
+	Frequency  Frequency
 	Type       Type
 }

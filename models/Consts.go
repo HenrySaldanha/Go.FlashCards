@@ -15,3 +15,11 @@ const (
 	Phrase
 	Explanation
 )
+
+type Frequency int
+
+const (
+	LowFrequency Frequency = iota
+	MediumFrequency
+	HighFrequency
+)
