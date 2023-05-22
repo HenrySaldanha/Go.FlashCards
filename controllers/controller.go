@@ -32,3 +32,10 @@ func InsertCard(w http.ResponseWriter, r *http.Request) {
 	card = repository.Save(card)
 	json.NewEncoder(w).Encode(card)
 }
+
+func DeleteCard(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	repository.Delete(id)
+	w.WriteHeader(http.StatusAccepted)
+}

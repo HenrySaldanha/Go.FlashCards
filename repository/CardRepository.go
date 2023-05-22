@@ -10,7 +10,7 @@ import (
 )
 
 func GetAll() []models.Card {
-	fmt.Println("getting all cards")
+	fmt.Println("Getting all cards")
 
 	var cards []models.Card
 
@@ -31,7 +31,7 @@ func GetAll() []models.Card {
 }
 
 func GetById(id string) (card *models.Card) {
-	fmt.Println("getting all cards")
+	fmt.Printf("Getting by id %s\n", id)
 
 	var cards []models.Card
 
@@ -67,4 +67,15 @@ func Save(card models.Card) models.Card {
 	}
 
 	return card
+}
+
+func Delete(id string) {
+	fmt.Printf("Deleting a card %s\n", id)
+
+	filter := bson.D{{Key: "id", Value: id}}
+	err := database.DeleteOne(database.CollectionName, filter)
+
+	if err != nil {
+		panic(err)
+	}
 }

@@ -63,13 +63,24 @@ func Query(collectionName string, query, field interface{}) (result *mongo.Curso
 
 	defer Close(client, ctx, cancel)
 
-	// select database and collection.
 	collection := client.Database(DatabaseName).Collection(collectionName)
 
-	// collection has an method Find,
-	// that returns a mongo.cursor
-	// based on query and field.
 	result, err = collection.Find(ctx, query,
 		options.Find().SetProjection(field))
 	return result, ctx, err
+}
+
+func DeleteOne(collectionName string, filter interface{}) (err error) {
+	client, ctx, cancel, err := GetMongoDBConnection()
+	if err != nil {
+		panic(err)
+	}
+
+	defer Close(client, ctx, cancel)
+
+	collection := client.Database(DatabaseName).Collection(collectionName)
+
+	_, err = collection.DeleteOne(ctx, filter)
+
+	return err
 }
