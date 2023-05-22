@@ -79,3 +79,17 @@ func Delete(id string) {
 		panic(err)
 	}
 }
+
+func Update(id string, card models.Card) models.Card {
+	fmt.Printf("Updating a card %s\n", id)
+
+	filter := bson.D{{Key: "id", Value: id}}
+	card.Id = id
+	_, err := database.ReplaceDocument(database.CollectionName, filter, card)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return card
+}

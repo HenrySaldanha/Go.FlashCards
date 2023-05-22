@@ -67,6 +67,7 @@ func Query(collectionName string, query, field interface{}) (result *mongo.Curso
 
 	result, err = collection.Find(ctx, query,
 		options.Find().SetProjection(field))
+
 	return result, ctx, err
 }
 
@@ -83,4 +84,19 @@ func DeleteOne(collectionName string, filter interface{}) (err error) {
 	_, err = collection.DeleteOne(ctx, filter)
 
 	return err
+}
+
+func ReplaceDocument(collectionName string, filter interface{}, replacement interface{}) (*mongo.UpdateResult, error) {
+	client, ctx, cancel, err := GetMongoDBConnection()
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer Close(client, ctx, cancel)
+
+	collection := client.Database(DatabaseName).Collection(collectionName)
+	result, err := collection.ReplaceOne(context.TODO(), filter, replacement)
+
+	return result, err
 }
