@@ -2,25 +2,33 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/HenrySaldanha/Go.FlashCards/models"
 	"github.com/HenrySaldanha/Go.FlashCards/repository"
+	"github.com/gorilla/mux"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Home Page")
+func GetAllCards(w http.ResponseWriter, r *http.Request) {
+	cards := repository.GetAll()
+	json.NewEncoder(w).Encode(cards)
 }
 
-func GetAllCards(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Buscando todos os registros")
-	repository.GetAllCards()
+func GetCardById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	card := repository.GetById(id)
+	if card != nil {
+		json.NewEncoder(w).Encode(&card)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+	}
 }
 
 func InsertCard(w http.ResponseWriter, r *http.Request) {
 	var card models.Card
 	json.NewDecoder(r.Body).Decode(&card)
-
-	repository.SaveCard(card)
+	card = repository.Save(card)
+	json.NewEncoder(w).Encode(card)
 }

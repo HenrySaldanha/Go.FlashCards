@@ -41,13 +41,27 @@ func Ping(client *mongo.Client, ctx context.Context) error {
 	return nil
 }
 
-func InsertOne(client *mongo.Client, ctx context.Context, collectionName string, doc interface{}) (*mongo.InsertOneResult, error) {
+func InsertOne(collectionName string, doc interface{}) (*mongo.InsertOneResult, error) {
+
+	client, ctx, cancel, err := GetMongoDBConnection()
+	if err != nil {
+		panic(err)
+	}
+
+	defer Close(client, ctx, cancel)
+
 	collection := client.Database(DatabaseName).Collection(collectionName)
 	result, err := collection.InsertOne(ctx, doc)
 	return result, err
 }
 
-func Query(client *mongo.Client, ctx context.Context, collectionName string, query, field interface{}) (result *mongo.Cursor, err error) {
+func Query(collectionName string, query, field interface{}) (result *mongo.Cursor, ctx context.Context, err error) {
+	client, ctx, cancel, err := GetMongoDBConnection()
+	if err != nil {
+		panic(err)
+	}
+
+	defer Close(client, ctx, cancel)
 
 	// select database and collection.
 	collection := client.Database(DatabaseName).Collection(collectionName)
@@ -57,5 +71,5 @@ func Query(client *mongo.Client, ctx context.Context, collectionName string, que
 	// based on query and field.
 	result, err = collection.Find(ctx, query,
 		options.Find().SetProjection(field))
-	return
+	return result, ctx, err
 }

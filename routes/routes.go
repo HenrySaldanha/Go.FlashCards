@@ -13,8 +13,8 @@ import (
 func HandleRequest() {
 	r := mux.NewRouter()
 	r.Use(middleware.ContentTypeMiddleware)
-	r.HandleFunc("/", controllers.Home).Methods("GET")
 	r.HandleFunc("/card", controllers.GetAllCards).Methods("GET")
+	r.HandleFunc("/card/{id}", controllers.GetCardById).Methods("GET")
 	r.HandleFunc("/card", controllers.InsertCard).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
