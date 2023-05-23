@@ -10,8 +10,6 @@ import (
 )
 
 func HandleRequest() {
-	//r := mux.NewRouter()
-
 	r := gin.Default()
 
 	docs.SwaggerInfo.BasePath = "/"
