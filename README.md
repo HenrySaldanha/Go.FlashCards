@@ -1,5 +1,6 @@
 The focus of this project was a simple implementation of CRUD using GO and MongoDB.
 
+![#](https://github.com/HenrySaldanha/Go.FlashCards/blob/main/images/swagger_api.png?raw=true)
 
 ## Run
 
