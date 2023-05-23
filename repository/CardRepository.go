@@ -4,15 +4,15 @@ import (
 	"fmt"
 
 	"github.com/HenrySaldanha/Go.FlashCards/database"
-	"github.com/HenrySaldanha/Go.FlashCards/models"
+	"github.com/HenrySaldanha/Go.FlashCards/model"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func GetAll() []models.Card {
+func GetAll() []model.Card {
 	fmt.Println("Getting all cards")
 
-	var cards []models.Card
+	var cards []model.Card
 
 	var filter, option interface{}
 	filter = bson.D{}
@@ -30,10 +30,10 @@ func GetAll() []models.Card {
 	return cards
 }
 
-func GetById(id string) (card *models.Card) {
+func GetById(id string) (card *model.Card) {
 	fmt.Printf("Getting by id %s\n", id)
 
-	var cards []models.Card
+	var cards []model.Card
 
 	var filter, option interface{}
 	filter = bson.D{{Key: "id", Value: id}}
@@ -55,7 +55,7 @@ func GetById(id string) (card *models.Card) {
 	return nil
 }
 
-func Save(card models.Card) models.Card {
+func Save(card model.Card) model.Card {
 	fmt.Printf("Saving a new card %+v\n", card)
 
 	card.Id = uuid.New().String()
@@ -80,7 +80,7 @@ func Delete(id string) {
 	}
 }
 
-func Update(id string, card models.Card) models.Card {
+func Update(id string, card model.Card) model.Card {
 	fmt.Printf("Updating a card %s\n", id)
 
 	filter := bson.D{{Key: "id", Value: id}}

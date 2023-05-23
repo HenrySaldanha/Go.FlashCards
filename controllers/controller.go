@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/HenrySaldanha/Go.FlashCards/models"
+	"github.com/HenrySaldanha/Go.FlashCards/model"
 	"github.com/HenrySaldanha/Go.FlashCards/repository"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
+	_ "github.com/swaggo/swag/example/celler/httputil"
 )
 
 // GetAllCards godoc
@@ -21,9 +21,10 @@ import (
 //	@Failure      404  {object}  httputil.HTTPError
 //	@Failure      500  {object}  httputil.HTTPError
 //	@Router       /cards [get]
-func GetAllCards(w http.ResponseWriter, r *http.Request) {
+func GetAllCards(c *gin.Context) {
 	cards := repository.GetAll()
-	json.NewEncoder(w).Encode(cards)
+
+	c.JSON(http.StatusOK, cards)
 }
 
 // GetCardById godoc
@@ -39,15 +40,15 @@ func GetAllCards(w http.ResponseWriter, r *http.Request) {
 //	@Failure      404  {object}  httputil.HTTPError
 //	@Failure      500  {object}  httputil.HTTPError
 //	@Router       /cards/{id} [get]
-func GetCardById(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
+func GetCardById(c *gin.Context) {
+	id := c.Params.ByName("id")
 
 	card := repository.GetById(id)
 	if card != nil {
-		json.NewEncoder(w).Encode(&card)
+		c.JSON(http.StatusOK, card)
 	} else {
-		w.WriteHeader(http.StatusNotFound)
+		c.JSON(http.StatusNotFound, gin.H{
+			"Not found": "Card is Not found"})
 	}
 }
 
@@ -64,11 +65,17 @@ func GetCardById(w http.ResponseWriter, r *http.Request) {
 //	@Failure      404  {object}  httputil.HTTPError
 //	@Failure      500  {object}  httputil.HTTPError
 //	@Router       /cards [post]
-func InsertCard(w http.ResponseWriter, r *http.Request) {
-	var card models.Card
-	json.NewDecoder(r.Body).Decode(&card)
+func InsertCard(c *gin.Context) {
+	var card model.Card
+
+	if err := c.ShouldBindJSON(&card); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error()})
+		return
+	}
+
 	card = repository.Save(card)
-	json.NewEncoder(w).Encode(card)
+	c.JSON(http.StatusOK, card)
 }
 
 // DeleteCard godoc
@@ -84,11 +91,10 @@ func InsertCard(w http.ResponseWriter, r *http.Request) {
 //	@Failure      404  {object}  httputil.HTTPError
 //	@Failure      500  {object}  httputil.HTTPError
 //	@Router       /cards/{id} [delete]
-func DeleteCard(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
+func DeleteCard(c *gin.Context) {
+	id := c.Params.ByName("id")
 	repository.Delete(id)
-	w.WriteHeader(http.StatusAccepted)
+	c.JSON(http.StatusAccepted, gin.H{"data": "Card has been deleted"})
 }
 
 // UpdateCard godoc
@@ -104,11 +110,16 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 //	@Failure      404  {object}  httputil.HTTPError
 //	@Failure      500  {object}  httputil.HTTPError
 //	@Router       /cards [put]
-func UpdateCard(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-	var card models.Card
-	json.NewDecoder(r.Body).Decode(&card)
+func UpdateCard(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var card model.Card
+
+	if err := c.ShouldBindJSON(&card); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error()})
+		return
+	}
+
 	card = repository.Update(id, card)
-	json.NewEncoder(w).Encode(card)
+	c.JSON(http.StatusOK, card)
 }

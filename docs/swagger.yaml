@@ -1,0 +1,219 @@
+definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  model.Card:
+    properties:
+      difficulty:
+        $ref: '#/definitions/model.Difficulty'
+      frequency:
+        $ref: '#/definitions/model.Frequency'
+      id:
+        type: string
+      meaning:
+        type: string
+      phrase:
+        type: string
+      type:
+        $ref: '#/definitions/model.Type'
+    type: object
+  model.Difficulty:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - Easy
+    - Medium
+    - Hard
+  model.Frequency:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - LowFrequency
+    - MediumFrequency
+    - HighFrequency
+  model.Type:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - Word
+    - Phrase
+    - Explanation
+info:
+  contact: {}
+paths:
+  /cards:
+    get:
+      consumes:
+      - application/json
+      description: get cards
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Card'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: List cards
+      tags:
+      - cards
+    post:
+      consumes:
+      - application/json
+      description: Insert cards
+      parameters:
+      - description: Card Model
+        in: body
+        name: cards
+        required: true
+        schema:
+          $ref: '#/definitions/model.Card'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Card'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Insert a new cards
+      tags:
+      - cards
+    put:
+      consumes:
+      - application/json
+      description: Update cards
+      parameters:
+      - description: Card Model
+        in: body
+        name: cards
+        required: true
+        schema:
+          $ref: '#/definitions/model.Card'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Card'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Update cards
+      tags:
+      - cards
+  /cards/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete card
+      parameters:
+      - description: Card Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/model.Card'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Delete card by Id
+      tags:
+      - cards
+    get:
+      consumes:
+      - application/json
+      description: Get card
+      parameters:
+      - description: Card Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Card'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Get card by Id
+      tags:
+      - cards
+swagger: "2.0"
